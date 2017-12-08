@@ -45,7 +45,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 
 bot.onText(/\/help/, (msg, match) => {
 
-    console.log(__dirname);
+    // console.log(__dirname);
     const chatId = msg.chat.id;
     const resp = match[1]; // the captured "whatever"
 
