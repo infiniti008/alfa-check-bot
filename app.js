@@ -5,7 +5,6 @@ const im = require('./imap.js');
 const CHATID = '208067133';
 const TOKEN = process.env.TELEGRAM_TOKEN || '268377689:AAEehpljdqiY6qITewLNPUkbe60Kbszl95w';
 
-// const bot = new TelegramBot(TOKEN, {polling: true});
 var bot;
 var server;
 if (process.env.PORT) {
@@ -27,53 +26,32 @@ if (process.env.PORT) {
 }
 
 
-console.log('server started');
+console.log('Server started on ' + server);
 
 bot.onText(/\/echo (.+)/, (msg, match) => {
-    // 'msg' is the received Message from Telegram
-    // 'match' is the result of executing the regexp above on the text content
-    // of the message
-
     const chatId = msg.chat.id;
-    const resp = match[1]; // the captured "whatever"
-
-    // send back the matched "whatever" to the chat
+    const resp = match[1];
     bot.sendMessage(chatId, resp);
 });
 
 bot.onText(/\/help/, (msg, match) => {
-
-    console.log(__dirname);
     const chatId = msg.chat.id;
-
-
-    // send back the matched "whatever" to the chat
     bot.sendMessage(chatId, 'resp');
 });
 
 bot.onText(/\/check/, (msg, match) => {
 
-    // 'msg' is the received Message from Telegram
-    // 'match' is the result of executing the regexp above on the text content
-    // of the message
-
     const chatId = msg.chat.id;
-    const resp = match[1]; // the captured "whatever"
+    const resp = match[1];
     bot.sendMessage(chatId, 'We start to scaning mail box');
-
     console.log('Add operation to calendar');
 
-    //   var spawn = require('child_process').spawn;
-    //   const create_photo = spawn('casperjs /home/cabox/workspace/index.js', {
-    //       stdio: 'inherit',
-    //       shell: true
-    //   });
     im.getNewMail().then(res => {
-        //      console.log(res);
+
         bot.sendMessage(chatId, 'We got all new mails');
         fs.writeFile('./base.json', JSON.stringify(res), () => {
-            bot.sendMessage(chatId, 'We seved mails to base');
 
+            bot.sendMessage(chatId, 'We seved mails to base and start adding new items to EasyFinance');
             var spawn = require('child_process').spawn;
             const create_photo = spawn('casperjs /app/index.js', {
                 stdio: 'inherit',
@@ -84,19 +62,19 @@ bot.onText(/\/check/, (msg, match) => {
                 console.log(`Child exited with code`);
                 allAdded();
             });
-
-
         });
     });
-    // send back the matched "whatever" to the chat
-
 });
-// Listen for any kind of message. There are different kinds of
-// messages.
+
 bot.on('message', (msg) => {
+
     const chatId = msg.chat.id;
-    // send a message to the chat acknowledging receipt of their message
-    bot.sendMessage(chatId, 'Received your message');
+
+    if (msg.entities) {
+        bot.sendMessage(msg.chat.id, `You send bot command!`);
+    } else {
+        bot.sendMessage(msg.chat.id, `I am alive on ${server}!`);
+    }
 });
 
 function allAdded() {
