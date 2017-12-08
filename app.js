@@ -89,6 +89,7 @@ bot.on('message', (msg) => {
     } else {
         bot.sendMessage(msg.chat.id, `I am alive on ${server}!`);
     }
+    //sd
 });
 
 function allAdded() {
