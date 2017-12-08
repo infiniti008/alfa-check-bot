@@ -36,7 +36,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 
 bot.onText(/\/help/, (msg, match) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'resp');
+    bot.sendMessage(chatId, 'I can\'t help tou');
 });
 
 bot.onText(/\/check/, (msg, match) => {
@@ -48,8 +48,8 @@ bot.onText(/\/check/, (msg, match) => {
 
     im.getNewMail().then(res => {
         if (!res['0']) {
-            bot.sendMessage(chatId, 'We doesn\'t have any new mails');
-            console.log('We doesn\'t have any new mails');
+            bot.sendMessage(chatId, 'There aren\'t any new mails');
+            console.log('There aren\'t any new mails');
         } else {
             bot.sendMessage(chatId, 'We got all new mails');
             fs.writeFile('./base.json', JSON.stringify(res), () => {
@@ -75,7 +75,17 @@ bot.on('message', (msg) => {
     const chatId = msg.chat.id;
 
     if (msg.entities) {
-        bot.sendMessage(msg.chat.id, `You send bot command!`);
+        const keyboard = {
+            parse_mode: "Markdown",
+            reply_markup: {
+                keyboard: [
+                    ["/check", "/help"]
+                ],
+                resize_keyboard: true,
+                one_time_keyboard: false,
+            },
+        };
+        bot.sendMessage(msg.chat.id, `You send bot command!`, keyboard);
     } else {
         bot.sendMessage(msg.chat.id, `I am alive on ${server}!`);
     }
