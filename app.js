@@ -45,10 +45,10 @@ bot.onText(/\/help/, (msg, match) => {
 
     console.log(__dirname);
     const chatId = msg.chat.id;
-    const resp = match[1]; // the captured "whatever"
+
 
     // send back the matched "whatever" to the chat
-    bot.sendMessage(chatId, resp);
+    bot.sendMessage(chatId, 'resp');
 });
 
 bot.onText(/\/check/, (msg, match) => {
@@ -75,7 +75,7 @@ bot.onText(/\/check/, (msg, match) => {
             bot.sendMessage(chatId, 'We seved mails to base');
 
             var spawn = require('child_process').spawn;
-            const create_photo = spawn('casperjs /home/cabox/workspace/index.js', {
+            const create_photo = spawn('casperjs /app/index.js', {
                 stdio: 'inherit',
                 shell: true
             });
