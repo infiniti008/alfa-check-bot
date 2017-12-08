@@ -47,22 +47,26 @@ bot.onText(/\/check/, (msg, match) => {
     console.log('Add operation to calendar');
 
     im.getNewMail().then(res => {
+        if (!res['0']) {
+            bot.sendMessage(chatId, 'We doesn\'t have any new mails');
+            console.log('We doesn\'t have any new mails');
+        } else {
+            bot.sendMessage(chatId, 'We got all new mails');
+            fs.writeFile('./base.json', JSON.stringify(res), () => {
 
-        bot.sendMessage(chatId, 'We got all new mails');
-        fs.writeFile('./base.json', JSON.stringify(res), () => {
+                bot.sendMessage(chatId, 'We seved mails to base and start adding new items to EasyFinance');
+                var spawn = require('child_process').spawn;
+                const create_photo = spawn('casperjs /app/index.js', {
+                    stdio: 'inherit',
+                    shell: true
+                });
 
-            bot.sendMessage(chatId, 'We seved mails to base and start adding new items to EasyFinance');
-            var spawn = require('child_process').spawn;
-            const create_photo = spawn('casperjs /app/index.js', {
-                stdio: 'inherit',
-                shell: true
+                create_photo.on('exit', (code) => {
+                    console.log(`Child exited with code`);
+                    allAdded();
+                });
             });
-
-            create_photo.on('exit', (code) => {
-                console.log(`Child exited with code`);
-                allAdded();
-            });
-        });
+        }
     });
 });
 
