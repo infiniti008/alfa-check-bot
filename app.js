@@ -1,3 +1,5 @@
+import { log } from 'util';
+
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const im = require('./imap.js');
@@ -34,6 +36,16 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
     // 'match' is the result of executing the regexp above on the text content
     // of the message
 
+    const chatId = msg.chat.id;
+    const resp = match[1]; // the captured "whatever"
+
+    // send back the matched "whatever" to the chat
+    bot.sendMessage(chatId, resp);
+});
+
+bot.onText(/\/help/, (msg, match) => {
+
+    console.log(__dirname);
     const chatId = msg.chat.id;
     const resp = match[1]; // the captured "whatever"
 
