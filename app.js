@@ -97,9 +97,9 @@ bot.onText(/\/check/, (msg, match) => {
 bot.on('message', (msg) => {
 
     const chatId = msg.chat.id;
-
+    // console.log(chatId);
     if (msg.entities) {
-        const keyboard = {
+        const keyAdmin = {
             parse_mode: "Markdown",
             reply_markup: {
                 keyboard: [
@@ -109,6 +109,17 @@ bot.on('message', (msg) => {
                 one_time_keyboard: false,
             },
         };
+        const keyUser = {
+            parse_mode: "Markdown",
+            reply_markup: {
+                keyboard: [
+                    ["/ostatok", "/help"]
+                ],
+                resize_keyboard: true,
+                one_time_keyboard: false,
+            },
+        };
+        const keyboard = msg.chat.id == CHATID ? keyAdmin : keyUser;
         bot.sendMessage(msg.chat.id, `You send bot command!`, keyboard);
     } else {
         bot.sendMessage(msg.chat.id, `I am alive on ${server}!`);
