@@ -3,7 +3,7 @@ const fs = require('fs');
 const im = require('./imap.js');
 
 const CHATID = '208067133';
-const TOKEN = process.env.TELEGRAM_TOKEN || '465483209:AAH3_iMtcVtbv1oOxXg3QOf-uueoWm5BYoM';
+const TOKEN = process.env.TELEGRAM_TOKEN || '268377689:AAEehpljdqiY6qITewLNPUkbe60Kbszl95w';
 
 var bot;
 var server;
@@ -37,6 +37,30 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 bot.onText(/\/help/, (msg, match) => {
     const chatId = msg.chat.id;
     bot.sendMessage(chatId, 'I can\'t help tou');
+});
+
+
+bot.onText(/\/ostatok/, (msg, match) => {
+    const chatId = msg.chat.id;
+    Promise.all(
+        [
+            im.getLastMail('totelegram/alfabank/family_olya'),
+            im.getLastMail('totelegram/alfabank/family_slava')
+        ]
+    )
+    .then(result => {
+        let latestMail = (result[0].date > result[1].date) ? result[0] : result[1];
+        let opt = {
+            hour12: false,
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            hour: 'numeric',
+            minute: 'numeric'
+        }
+        // console.log(latestMail.date.toLocaleString("ru-RU", opt));
+        bot.sendMessage(chatId, `Остаток по Ваше семейной карте составляет: <b>${latestMail.total}</b> BYN\nНа дату: ${latestMail.date.toLocaleString("ru", opt)}`,{parse_mode: 'HTML'});
+    });
 });
 
 bot.onText(/\/check/, (msg, match) => {
@@ -79,7 +103,7 @@ bot.on('message', (msg) => {
             parse_mode: "Markdown",
             reply_markup: {
                 keyboard: [
-                    ["/check", "/help"]
+                    ["/ostatok", "/check", "/help"]
                 ],
                 resize_keyboard: true,
                 one_time_keyboard: false,
