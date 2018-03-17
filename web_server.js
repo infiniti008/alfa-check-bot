@@ -11,7 +11,7 @@ const PORT = process.env.WEB_PORT || 3000;
 // app.use(express.json()); 
 
 app.listen(PORT, () => {
-    console.log('Server started on port', port);
+    console.log('Server started on port', PORT);
 });
 
 app.get('/', (req, res) => {
