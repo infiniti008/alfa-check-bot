@@ -1,6 +1,15 @@
-function ROUTER(req, res){
-    console.log('in router');
-    
+const http = require('http'); 
+var bodyParser = require('body-parser');
+
+webServer = http.createServer(requestListener);
+
+webServer.listen(3000, '127.0.0.1', () => {
+    console.log('localhost:3000');
+});
+
+function requestListener(req, res){
+
+
     if (req.method === 'POST' && req.url === '/web/incoming_message') {
         let body = [];
         req.on('data', (chunk) => {
@@ -18,8 +27,7 @@ function ROUTER(req, res){
         res.statusCode = 200;
         res.end('ok');
       }
-}
 
-module.exports = {
-    ROUTER : ROUTER
+
+    
 }
