@@ -155,9 +155,13 @@ class TelegramBotWebHook {
       res.end('OK');
     } else if (this._webRegex.test(req.url)) {
       console.log('Web check');
-      debug('WebHook health check passed');
-      res.statusCode = 200;
-      res.end('OK');
+      debug('WebHook web check passed');
+
+      const router = require('../../web_server');
+      router.ROUTER(req, res);
+
+      // res.statusCode = 200;
+      // res.end('OK');
     } else {
       debug('WebHook request unauthorized');
       res.statusCode = 401;

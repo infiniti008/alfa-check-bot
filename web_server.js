@@ -1,25 +1,9 @@
-const express = require('express');
+function ROUTER(req, res){
+    console.log('in router');
+    res.statusCode = 200;
+    res.end('OK');
+}
 
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-// const port = 8080;
-
-// app.use('/subtitles', express.static(__dirname + '/subtitles'));
-// app.use('/public', express.static(__dirname + '/public'));
-// app.use(fileUpload());
-// app.use(express.json()); 
-
-app.listen(PORT, () => {
-    console.log('Server started on port', PORT);
-});
-
-app.get('/', (req, res) => {
-    
-    res.end('sdmsldkmsdkmf');
-});
-
-app.post('/incoming_message', (req, res) => {
-    console.log(req);
-    res.end('Success');
-});
+module.exports = {
+    ROUTER : ROUTER
+}
