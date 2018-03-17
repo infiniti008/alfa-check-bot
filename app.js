@@ -20,7 +20,7 @@ if (process.env.PORT) {
     bot = new TelegramBot(TOKEN, options);
     bot.setWebHook(`${url}/bot${TOKEN}`);
     console.log('URL', url);
-    console.log(bot.getWebHookInfo());
+    // console.log(bot.getWebHookInfo());
 } else {
     console.log('Polling');
     server = 'Localhost';
