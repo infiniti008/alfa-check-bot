@@ -2,7 +2,7 @@ const express = require('express');
 
 
 const app = express();
-const PORT = process.env.WEB_PORT || 3000;
+const PORT = process.env.PORT || 3000;
 // const port = 8080;
 
 // app.use('/subtitles', express.static(__dirname + '/subtitles'));
