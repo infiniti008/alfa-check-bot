@@ -1,23 +1,25 @@
 function ROUTER(req, res){
     console.log('in router');
-    
+
     if (req.method === 'POST' && req.url === '/web/incoming_message') {
         let body = [];
         req.on('data', (chunk) => {
           body.push(chunk);
         }).on('end', () => {
           body = Buffer.concat(body).toString();
-          res.end(body);
-          console.log(body);
+          res.end('ok');
+          console.log(body.plain);
         });
-      }
-      else{
+    }
+    else if(req.url ==='/web'){
+        res.statusCode = 200;
+        res.end('Welcom to home page');
+    }
 
-        // console.log(Object.keys(req.connection.parser));
-        // console.log(req.connection.parser.incoming);
+    else{
         res.statusCode = 200;
         res.end('ok');
-      }
+    }
 }
 
 module.exports = {

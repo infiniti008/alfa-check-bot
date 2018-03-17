@@ -24,6 +24,10 @@ class TelegramBotWebHook {
     this.options.web = this.options.web || '/web';
     this._healthRegex = new RegExp(this.options.healthEndpoint);
     this._webRegex = new RegExp(this.options.web);
+
+    this.options.fav = '/favicon.ico';
+    this._favRegex = new RegExp(this.options.fav);
+
     this._webServer = null;
     this._open = false;
     this._requestListener = this._requestListener.bind(this);
@@ -164,7 +168,12 @@ class TelegramBotWebHook {
 
       // res.statusCode = 200;
       // res.end('OK');
-    } else {
+    } else if(this._favRegex.test(req.url)){
+      console.log('Favicon check');
+      res.sendFile('../../icon.png');
+    }  
+    
+    else {
       debug('WebHook request unauthorized');
       res.statusCode = 401;
       res.end();
