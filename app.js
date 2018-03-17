@@ -1,4 +1,4 @@
-const TelegramBot = require('node-telegram-bot-api');
+const TelegramBot = require('./my_node-telegram-bot-api');
 const fs = require('fs');
 const im = require('./imap.js');
 // const web_server = require('./web_server');
@@ -40,6 +40,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 bot.onText(/\/help/, (msg, match) => {
     const chatId = msg.chat.id;
     bot.sendMessage(chatId, 'I can\'t help tou');
+    console.log('ddd');
 });
 
 
