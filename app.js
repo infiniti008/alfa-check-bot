@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const im = require('./imap.js');
-const web_server = require('./web_server');
+// const web_server = require('./web_server');
 
 const CHATID = '208067133';
 const TOKEN = process.env.TELEGRAM_TOKEN || '268377689:AAEehpljdqiY6qITewLNPUkbe60Kbszl95w';
@@ -16,9 +16,10 @@ if (process.env.PORT) {
             port: process.env.PORT
         }
     };
-    const url = 'https://alfa-check.herokuapp.com:8443';
+    const url = process.env.APP_URL || 'https://alfa-check.herokuapp.com:443';
     bot = new TelegramBot(TOKEN, options);
     bot.setWebHook(`${url}/bot${TOKEN}`);
+    console.log('URL', process.env.APP_URL);
 } else {
     console.log('Polling');
     server = 'Localhost';
