@@ -138,6 +138,7 @@ class TelegramBotWebHook {
     debug('WebHook request headers: %j', req.headers);
 
     if (req.url.indexOf(this.bot.token) !== -1) {
+      console.log('Gor request');
       if (req.method !== 'POST') {
         debug('WebHook request isn\'t a POST');
         res.statusCode = 418; // I'm a teabot!
@@ -148,6 +149,12 @@ class TelegramBotWebHook {
           .on('finish', () => res.end('OK'));
       }
     } else if (this._healthRegex.test(req.url)) {
+      console.log('Health check');
+      debug('WebHook health check passed');
+      res.statusCode = 200;
+      res.end('OK');
+    } else if (this._webRegex.test(req.url)) {
+      console.log('Web check');
       debug('WebHook health check passed');
       res.statusCode = 200;
       res.end('OK');
