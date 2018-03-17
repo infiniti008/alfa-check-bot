@@ -16,7 +16,7 @@ if (process.env.PORT) {
             port: process.env.PORT
         }
     };
-    const url = process.env.APP_URL || 'https://alfa-check.herokuapp.com:443';
+    const url = 'https://alfa-check.herokuapp.com:8443';
     bot = new TelegramBot(TOKEN, options);
     bot.setWebHook(`${url}/bot${TOKEN}`);
 } else {
