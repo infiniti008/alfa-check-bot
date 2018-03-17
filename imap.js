@@ -1,5 +1,8 @@
 const imaps = require('imap-simple');
 const parseMes = require('./parseMail.js');
+const shortid = require('shortid');
+
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#@');
 
 function getNewMail() {
     return new Promise(resolve => {
@@ -81,6 +84,53 @@ function getLastMail(box) {
     });
 }
 
+
+function getAllMail(box) {
+    return new Promise(resolve => {
+        let textArr = {};
+        var config = {
+            imap: {
+                user: 'nikitenok.sl@gmail.com',
+                password: 'nov191190',
+                host: 'imap.gmail.com',
+                port: 993,
+                tls: true,
+                authTimeout: 3000
+            }
+        };
+        imaps.connect(config).then(function(connection) {
+            return connection.openBox(box).then(function() {
+                const searchCriteria = [
+                    ['ALL']
+                ];
+                const fetchOptions = {
+                    bodies: ['TEXT'],
+                    markSeen: false
+                };
+                return connection.search(searchCriteria, fetchOptions).then(function(results) {
+                    results.forEach(function(val, ind, ar) {
+                        // textArr[ind] = {};
+                        let textBuffer = new Buffer(val.parts[0].body, 'base64');
+                        let text = textBuffer.toString('utf8');
+                        textArr[shortid.generate() + '-' + val.attributes.date] = text;
+                        // textArr[ind].data = parseMes.parseMessage(text);
+                        // textArr[ind].date = val.attributes.date;
+                        textBuffer = null;
+                        text = null;
+                    });
+                    textArr.length = results.length;
+                    // console.log(results[0]);
+                    
+                    connection.end();
+                    resolve(textArr);
+                });
+            });
+        });
+    });
+}
+
+
+//eses example
 // Promise.all(
 //     [
 //         getLastMail('totelegram/alfabank/family_olya'),
@@ -94,5 +144,6 @@ function getLastMail(box) {
 
 module.exports = {
     getNewMail: getNewMail,
-    getLastMail : getLastMail
-}
+    getLastMail : getLastMail,
+    getAllMail : getAllMail
+};
