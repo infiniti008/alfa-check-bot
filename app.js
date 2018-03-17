@@ -13,7 +13,7 @@ if (process.env.PORT) {
     server = 'Heroku';
     const options = {
         webHook: {
-            port: process.env.PORT
+            // port: process.env.PORT
         }
     };
     const url = process.env.APP_URL || 'https://alfa-check.herokuapp.com:443';
