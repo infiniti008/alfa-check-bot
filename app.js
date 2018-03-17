@@ -19,7 +19,8 @@ if (process.env.PORT) {
     const url = process.env.APP_URL || 'https://alfa-check.herokuapp.com:443';
     bot = new TelegramBot(TOKEN, options);
     bot.setWebHook(`${url}/bot${TOKEN}`);
-    console.log('URL', process.env.APP_URL);
+    console.log('URL', url);
+    console.log(bot.getWebHookInfo());
 } else {
     console.log('Polling');
     server = 'Localhost';
