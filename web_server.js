@@ -10,7 +10,7 @@ function ROUTER(req, res){
             res.end('ok');
             //   in heroku it is body.plain
             // const text = body.plain;
-            const text = process.env.PORT ? body.plain : body;
+            const text = body.plain;
             console.log(text);
             onMessage(text);
         });
