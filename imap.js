@@ -112,13 +112,14 @@ function getAllMail(box) {
                         // textArr[ind] = {};
                         let textBuffer = new Buffer(val.parts[0].body, 'base64');
                         let text = textBuffer.toString('utf8');
-                        textArr[shortid.generate() + '-' + val.attributes.date] = text;
+                        let parsedMes = parseMes.parseMessage(text);
+                        textArr[shortid.generate() + '-' + parsedMes.date + ' ' + parsedMes.time + ' GMT+0300 (+03)'] = text;
                         // textArr[ind].data = parseMes.parseMessage(text);
                         // textArr[ind].date = val.attributes.date;
                         textBuffer = null;
                         text = null;
                     });
-                    textArr.length = results.length;
+                    // textArr.length = results.length;
                     // console.log(results[0]);
                     
                     connection.end();
