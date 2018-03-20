@@ -13,7 +13,7 @@ function ROUTER(req, res){
             // const text = body['plain'];
             // console.log();
             console.log(text.plain);
-            // onMessage(text);
+            onMessage(text.plain);
         });
     }
     else if(req.url ==='/web'){
