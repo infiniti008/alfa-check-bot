@@ -11,8 +11,8 @@ function ROUTER(req, res){
             //   in heroku it is body.plain
             // const text = body.plain;
             const text = process.env.PORT ? body.plain : body;
-            console.log(body);
-            // onMessage(text);
+            console.log(text);
+            onMessage(text);
         });
     }
     else if(req.url ==='/web'){
@@ -34,10 +34,10 @@ function onMessage(text){
 
     let parsedMes = parseMes.parseMessage(text);
 
-    // const toBaseId = shortid.generate() + '-' + parsedMes.date + ' ' + parsedMes.time + ' GMT+0300 (+03)';
-    // const myBase = Base.BASE;
-    // myBase.update();
-    // myBase.addLine(toBaseId, text).saveToFile();
+    const toBaseId = shortid.generate() + '-' + parsedMes.date + ' ' + parsedMes.time + ' GMT+0300 (+03)';
+    const myBase = Base.BASE;
+    myBase.update();
+    myBase.addLine(toBaseId, text).saveToFile();
 
     const myCounts = Base.COUNTS;
     myCounts.update();
