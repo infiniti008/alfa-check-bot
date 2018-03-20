@@ -10,8 +10,8 @@ function ROUTER(req, res){
             res.end('ok');
             //   in heroku it is body.plain
             // const text = body.plain;
-            const text = body['plain'];
-            console.log(text);
+            // const text = body['plain'];
+            console.log(Object.keys(body));
             // onMessage(text);
         });
     }
