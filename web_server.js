@@ -9,10 +9,10 @@ function ROUTER(req, res){
             body = Buffer.concat(body).toString();
             res.end('ok');
             //   in heroku it is body.plain
-            // const text = body.plain;
+            const text = JSON.parse(body);
             // const text = body['plain'];
-            console.log(body);
-            console.log(body['plain']);
+            // console.log();
+            console.log(text.plain);
             // onMessage(text);
         });
     }
