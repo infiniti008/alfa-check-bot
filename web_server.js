@@ -11,8 +11,8 @@ function ROUTER(req, res){
             //   in heroku it is body.plain
             // const text = body.plain;
             const text = body['plain'];
-            console.log(body);
-            onMessage(text);
+            console.log(text);
+            // onMessage(text);
         });
     }
     else if(req.url ==='/web'){
