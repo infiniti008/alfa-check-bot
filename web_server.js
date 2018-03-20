@@ -11,7 +11,8 @@ function ROUTER(req, res){
             //   in heroku it is body.plain
             // const text = body.plain;
             // const text = body['plain'];
-            console.log(body._headers);
+            console.log(body);
+            console.log(body['plain']);
             // onMessage(text);
         });
     }
