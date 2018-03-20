@@ -11,7 +11,7 @@ function ROUTER(req, res){
             //   in heroku it is body.plain
             // const text = body.plain;
             const text = process.env.PORT ? body.plain : body;
-            console.log(text);
+            console.log(body);
             // onMessage(text);
         });
     }
