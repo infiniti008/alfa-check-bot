@@ -1,12 +1,7 @@
 const TelegramBot = require('./my_node-telegram-bot-api');
 const fs = require('fs');
-// const im = require('./imap.js');
 const web_server = require('./web_server');
 
-// const SUBSCRIBERS = {
-//     'BY93ALFA30146906250120270000' : ['208067133'], //family
-//     'BY41ALFA30146906250090270000' : ['208067133']  //A-kurs BYN
-// };
 const Base = require('./firebase.js');
 Base.init();
 
@@ -141,28 +136,15 @@ bot.on('message', (msg) => {
     //sd
 });
 
-function allAdded() {
-    bot.sendMessage(CHATID, 'All added to EasyFinance');
-    fs.writeFileSync('./base.json', JSON.stringify({}));
-}
-
-
-
 function sendLastOperation(count, data){
     console.log('In last send');
     
-
     Base.subscribersGet(count)
         .then(base => {
             base.currentCountSubscribers.map(id => {
                 bot.sendMessage(id, data);
             });
         });
-
-    // console.log(SUBSCRIBERS[count]);
-    // SUBSCRIBERS[count].map(id => {
-    //     bot.sendMessage(id, data);
-    // });
 }
 
 

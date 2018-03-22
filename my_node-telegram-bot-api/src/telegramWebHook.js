@@ -2,7 +2,6 @@ const errors = require('./errors');
 const debug = require('debug')('node-telegram-bot-api');
 const https = require('https');
 const http = require('http');
-const express = require('express');
 const fs = require('fs');
 const bl = require('bl');
 const Promise = require('bluebird');

@@ -8,13 +8,18 @@ function ROUTER(req, res){
         }).on('end', () => {
             body = Buffer.concat(body).toString();
             res.end('ok');
-            // on heroku it is body.plain
-            const text = JSON.parse(body);
-            console.log(text.plain);
-            onMessage(text.plain);
-            // on localhost
-            // console.log(body);
-            // onMessage(body);
+
+            if (process.env.PORT) {
+                // on heroku it is body.plain
+                const text = JSON.parse(body);
+                console.log(text.plain);
+                onMessage(text.plain);
+            } else{
+                // on localhost
+                console.log(body);
+                onMessage(body);
+            }
+            
         });
     }
     else if(req.url ==='/web'){
