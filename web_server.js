@@ -9,16 +9,14 @@ function ROUTER(req, res){
             body = Buffer.concat(body).toString();
             res.end('ok');
 
-            if (process.env.PORT) {
-                // on heroku it is body.plain
-                const text = JSON.parse(body);
-                console.log(text.plain);
-                onMessage(text.plain);
-            } else{
-                // on localhost
-                console.log(body);
-                onMessage(body);
-            }
+            // on heroku it is body.plain
+            const text = JSON.parse(body);
+            console.log(text.plain);
+            onMessage(text.plain);
+        
+            // on localhost
+            // console.log(body);
+            // onMessage(body);
             
         });
     }
