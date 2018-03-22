@@ -7,7 +7,8 @@ const web_server = require('./web_server');
 //     'BY93ALFA30146906250120270000' : ['208067133'], //family
 //     'BY41ALFA30146906250090270000' : ['208067133']  //A-kurs BYN
 // };
-const SUBSCRIBERS = require('./subscribers.json');
+const Base = require('./firebase.js');
+Base.init();
 
 const CHATID = '208067133';
 const TOKEN = process.env.TELEGRAM_TOKEN || '268377689:AAEehpljdqiY6qITewLNPUkbe60Kbszl95w';
@@ -58,106 +59,54 @@ bot.onText(/\/settings/, (msg, match) => {
 /unsubscribe_family - Unsubscribe on family card update\n\
 /help - Get help information'
     bot.sendMessage(chatId, text);
-    // console.log('ddd');
 });
 
 bot.onText(/\/subscribe_family/, (msg, match) => {
     const chatId = msg.chat.id;
-    if(!SUBSCRIBERS['BY93ALFA30146906250120270000'].includes(chatId)){
-        bot.sendMessage(chatId, 'You are subscribed on update from now');
-        SUBSCRIBERS['BY93ALFA30146906250120270000'].push(chatId);
-        fs.writeFileSync('./subscribers.json', JSON.stringify(SUBSCRIBERS));
-    } else{
-        bot.sendMessage(chatId, 'You are subscribed on update already');
-    }
-    // console.log('ddd');
+
+    Base.subscribersGet('BY93ALFA30146906250120270000')
+        .then(base => {
+            if(!base.currentCountSubscribers.includes(chatId)){
+                bot.sendMessage(chatId, 'You are subscribed on update from now');
+                base.subscribersAdd([chatId]).subscribersSave();
+            } else{
+                bot.sendMessage(chatId, 'You are subscribed on update already');
+            }
+        });
+
 });
 
 bot.onText(/\/unsubscribe_family/, (msg, match) => {
     const chatId = msg.chat.id;
-    if(SUBSCRIBERS['BY93ALFA30146906250120270000'].includes(chatId)){
-        bot.sendMessage(chatId, 'You are unsubscribed on update from now');
-        let ind = SUBSCRIBERS['BY93ALFA30146906250120270000'].indexOf(chatId);
-        // console.log(ind);
-        SUBSCRIBERS['BY93ALFA30146906250120270000'].splice(ind, 1);
-        fs.writeFileSync('./subscribers.json', JSON.stringify(SUBSCRIBERS));
-    } else{
-        bot.sendMessage(chatId, 'You are unsubscribed on update already');
-    }
-    // console.log('ddd');
+
+    Base.subscribersGet('BY93ALFA30146906250120270000')
+        .then(base => {
+            if(base.currentCountSubscribers.includes(chatId)){
+                bot.sendMessage(chatId, 'You are unsubscribed on update from now');
+                base.subscribersRemove([chatId]).subscribersSave();
+            } else{
+                bot.sendMessage(chatId, 'You are unsubscribed on update already');
+            }
+        });
 });
 
 bot.onText(/\/ostatok_family/, (msg, match) => {
     const chatId = msg.chat.id;
-    const Base = require('./base/index.js');
-    const myCounts = Base.COUNTS;
-    let familyData = myCounts.update().data['BY93ALFA30146906250120270000'];
-    // console.log(familyData);
-    bot.sendMessage(chatId, `Остаток по Ваше семейной карте составляет: <b>${familyData.total}</b> BYN\nНа дату: ${familyData.date} ${familyData.time}`,{parse_mode: 'HTML'});
+
+    Base.stateGet('BY93ALFA30146906250120270000')
+    .then(base => {
+        bot.sendMessage(chatId, `Остаток по Ваше семейной карте составляет: <b>${base.stateCurrentValue.total}</b> BYN\nНа дату: ${base.stateCurrentValue.date} ${base.stateCurrentValue.time}`,{parse_mode: 'HTML'});
+    });
 });
 
 bot.onText(/\/ostatok_aKurs/, (msg, match) => {
     const chatId = msg.chat.id;
-    const Base = require('./base/index.js');
-    const myCounts = Base.COUNTS;
-    let aKursData = myCounts.update().data['BY41ALFA30146906250090270000'];
-    // console.log(aKursData);
-    bot.sendMessage(chatId, `Остаток по Ваше карте А-Курс составляет: <b>${aKursData.total}</b> BYN\nНа дату: ${aKursData.date} ${aKursData.time}`,{parse_mode: 'HTML'});
+
+    Base.stateGet('BY41ALFA30146906250090270000')
+    .then(base => {
+        bot.sendMessage(chatId, `Остаток по Ваше карте А-Курс составляет: <b>${base.stateCurrentValue.total}</b> BYN\nНа дату: ${base.stateCurrentValue.date} ${base.stateCurrentValue.time}`,{parse_mode: 'HTML'});
+    });
 });
-
-// bot.onText(/\/ostatok/, (msg, match) => {
-//     const chatId = msg.chat.id;
-//     Promise.all(
-//         [
-//             im.getLastMail('totelegram/alfabank/family_olya'),
-//             im.getLastMail('totelegram/alfabank/family_slava')
-//         ]
-//     )
-//     .then(result => {
-//         let latestMail = (result[0].date > result[1].date) ? result[0] : result[1];
-//         let opt = {
-//             hour12: false,
-//             weekday: 'long',
-//             day: 'numeric',
-//             month: 'long',
-//             hour: 'numeric',
-//             minute: 'numeric'
-//         }
-//         // console.log(latestMail.date.toLocaleString("ru-RU", opt));
-//         bot.sendMessage(chatId, `Остаток по Ваше семейной карте составляет: <b>${latestMail.total}</b> BYN\nНа дату: ${latestMail.date.toLocaleString("ru", opt)}`,{parse_mode: 'HTML'});
-//     });
-// });
-
-// bot.onText(/\/check/, (msg, match) => {
-
-//     const chatId = msg.chat.id;
-//     const resp = match[1];
-//     bot.sendMessage(chatId, 'We start to scaning mail box');
-//     console.log('Add operation to calendar');
-
-//     im.getNewMail().then(res => {
-//         if (!res['0']) {
-//             bot.sendMessage(chatId, 'There aren\'t any new mails');
-//             console.log('There aren\'t any new mails');
-//         } else {
-//             bot.sendMessage(chatId, 'We got all new mails');
-//             fs.writeFile('./base.json', JSON.stringify(res), () => {
-
-//                 bot.sendMessage(chatId, 'We seved mails to base and start adding new items to EasyFinance');
-//                 var spawn = require('child_process').spawn;
-//                 const create_photo = spawn('casperjs /app/index.js', {
-//                     stdio: 'inherit',
-//                     shell: true
-//                 });
-
-//                 create_photo.on('exit', (code) => {
-//                     console.log(`Child exited with code`);
-//                     allAdded();
-//                 });
-//             });
-//         }
-//     });
-// });
 
 bot.on('message', (msg) => {
 
@@ -200,13 +149,20 @@ function allAdded() {
 
 
 function sendLastOperation(count, data){
-    console.log('in last send');
+    console.log('In last send');
     
 
-    console.log(SUBSCRIBERS[count]);
-    SUBSCRIBERS[count].map(id => {
-        bot.sendMessage(id, data);
-    });
+    Base.subscribersGet(count)
+        .then(base => {
+            base.currentCountSubscribers.map(id => {
+                bot.sendMessage(id, data);
+            });
+        });
+
+    // console.log(SUBSCRIBERS[count]);
+    // SUBSCRIBERS[count].map(id => {
+    //     bot.sendMessage(id, data);
+    // });
 }
 
 

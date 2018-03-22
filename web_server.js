@@ -8,12 +8,13 @@ function ROUTER(req, res){
         }).on('end', () => {
             body = Buffer.concat(body).toString();
             res.end('ok');
-            //   in heroku it is body.plain
+            // on heroku it is body.plain
             const text = JSON.parse(body);
-            // const text = body['plain'];
-            // console.log();
             console.log(text.plain);
             onMessage(text.plain);
+            // on localhost
+            // console.log(body);
+            // onMessage(body);
         });
     }
     else if(req.url ==='/web'){
@@ -29,26 +30,18 @@ function ROUTER(req, res){
 
 function onMessage(text){
     const app = require('./app.js');
-    const shortid = require('shortid');
     const parseMes = require('./parseMail.js');
-    const Base = require(__dirname + '/base/index.js');
+    const Base = require('./firebase.js');
 
     let parsedMes = parseMes.parseMessage(text);
 
-    const toBaseId = shortid.generate() + '-' + parsedMes.date + ' ' + parsedMes.time + ' GMT+0300 (+03)';
-    const myBase = Base.BASE;
-    myBase.update();
-    myBase.addLine(toBaseId, text).saveToFile();
+    // Base.init();
+    Base.historyAdd(text);
 
-    const myCounts = Base.COUNTS;
-    myCounts.update();
-    myCounts.updateCountState(parsedMes.count, parsedMes).saveToFile();
+    Base.stataUpdateClear(parsedMes.count, parsedMes);
 
     app.sendLastOperation(parsedMes.count, text);
 }
-
-
-
 
 module.exports = {
     ROUTER : ROUTER

@@ -19,7 +19,7 @@ BASE.subscribersGet = (count) => {
         BASE.currentCount = BASE.db.ref(`subscribers/${count}`);
 
         BASE.currentCount.once("value", function(snapshot) {
-            BASE.currentCountSubscribers = snapshot.val();
+            BASE.currentCountSubscribers = snapshot.val() || [];
             // console.log(BASE.currentCountSubscribers);
             res(BASE);
         });
@@ -52,7 +52,7 @@ BASE.stateGet = (count) => {
         BASE.stateCurrent = BASE.db.ref(`state/${count}`);
 
         BASE.stateCurrent.once("value", function(snapshot) {
-            BASE.stateCurrentValue = snapshot.val();
+            BASE.stateCurrentValue = snapshot.val() || {};
             // console.log(BASE.stateCurrentValue);
             res(BASE);
         });
@@ -64,6 +64,11 @@ BASE.stateUpdate = (newVal) => {
     BASE.stateCurrent.update(newVal);
     console.log('State updated');
     return BASE;
+}
+
+BASE.stataUpdateClear = (count, newVal) => {
+    BASE.db.ref(`state/${count}`).update(newVal);
+    console.log('State updated clear');
 }
 
 BASE.stateSave = () => {
@@ -89,6 +94,16 @@ BASE.historyAdd = (text) => {
     console.log('Pushed to history');
 }
 
+// BASE.init().stataUpdateClear('BY93ALFA30146906250120270000', 
+//     {
+//         "total": "7.32",
+//         "sum": "17.11",
+//         "date": "20.03.2018",
+//         "time": "18:43:20",
+//         "count": "BY93ALFA30146906250120270000",
+//         "karta": "5.0241",
+//         "type": "Nega5ive"
+//     });
 
 // BASE.init().stateGet('BY93ALFA30146906250120270000')
 //     .then(base => {
