@@ -1,5 +1,5 @@
 function parseMessage(t){
-  a = 'Karta 5.0541\nСо счёта: BY93ALFA30146906250120270000\nПеревод (Поступление)\nУспешно\nСумма:12 BYN\nОстаток:31,32 BYN\nНа время:09:19:43\nBLR/ONLINE SERVICE/Transfers AK AM\n08.12.2017 09:19:35\r\n';
+  a = 'Карта 5.5782\nСо счёта: BY41ALFA30146906250090270000\nПеревод (Списание)\nУспешно\nСумма:3.62 BYN\nОстаток:72.66 BYN\nНа время:09:59:42\nBLR/ONLINE SERVICE/VELCOM PO N TELEFONA: 447135093\n10.07.2018 09:59:42\r\n';
   // t = a;
   let msgObj = {};
 
@@ -16,11 +16,12 @@ function parseMessage(t){
   let count = /BY[A-Z0-9]{22}0000/;
   msgObj.count = t.match(count)[0];
 
-  msgObj.karta = t.match(/karta\s*(\d[.]\d\d\d\d)/i)[1];
+  msgObj.karta = t.match(/карта\s*(\d[.]\d\d\d\d)/i)[1];
 
   msgObj.type = t.match(/(..)\s*сч[ёе]т/i)[1] == 'На' ? 'Positive' : 'Negative';
 
   return msgObj;
+
 }
 
 module.exports = {
