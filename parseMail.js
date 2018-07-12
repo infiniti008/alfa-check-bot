@@ -1,6 +1,4 @@
 function parseMessage(t){
-  a = 'Карта 5.5782\nСо счёта: BY41ALFA30146906250090270000\nПеревод (Списание)\nУспешно\nСумма:3.62 BYN\nОстаток:72.66 BYN\nНа время:09:59:42\nBLR/ONLINE SERVICE/VELCOM PO N TELEFONA: 447135093\n10.07.2018 09:59:42\r\n';
-  // t = a;
   let msgObj = {};
 
   msgObj.total = t.match(/остаток[:?\s?]+([\d,?.?]{1,7})[\s]+byn/i)[1].replace(',','.');
@@ -28,5 +26,9 @@ module.exports = {
   parseMessage : parseMessage
 }
 
-// console.log(parseMessage());
-// parseMessage()
+// var a = 'Карта 5.5782\nСо счёта: BY41ALFA30146906250090270000\nПеревод (Списание)\nУспешно\nСумма:3.62 BYN\nОстаток:72.66 BYN\nНа время:09:59:42\nBLR/ONLINE SERVICE/VELCOM PO N TELEFONA: 447135093\n10.07.2018 09:59:42\r\n';
+  
+
+// var p = require('./puppeteer.js')
+// // console.log(parseMessage());
+// p.run(parseMessage(a), a)

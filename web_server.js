@@ -35,6 +35,7 @@ function onMessage(text){
     const app = require('./app.js');
     const parseMes = require('./parseMail.js');
     const Base = require('./firebase.js');
+    const pup = require('./puppeteer.js')
 
     let parsedMes = parseMes.parseMessage(text);
 
@@ -42,6 +43,8 @@ function onMessage(text){
     Base.historyAdd(text);
 
     Base.stataUpdateClear(parsedMes.count, parsedMes);
+
+    pup.run(parsedMes, text)
 
     app.sendLastOperation(parsedMes.count, text);
 }
