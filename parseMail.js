@@ -1,4 +1,4 @@
-function parseMessage(t){
+function parseMessage(t, reg){
   let msgObj = {};
 
   msgObj.total = t.match(/остаток[:?\s?]+([\d,?.?]{1,7})[\s]+byn/i)[1].replace(',','.');
@@ -17,6 +17,15 @@ function parseMessage(t){
   msgObj.karta = t.match(/карта\s*(\d[.]\d\d\d\d)/i)[1];
 
   msgObj.type = t.match(/(..)\s*сч[ёе]т/i)[1] == 'На' ? 'Positive' : 'Negative';
+
+  let regObj = reg.find(function(val){
+    var r = new RegExp(val.regexp)
+    return r.test(t);
+  })
+
+  msgObj.categortObj = regObj || false;
+
+  console.log(msgObj.categortObj);
 
   return msgObj;
 

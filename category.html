@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        body{
+            margin: 0;
+        }
+        table{
+            border-collapse: collapse;
+        }
+        td{
+            padding: 5px 5px;
+        }
+        input[type='checkbox'], input[type='radio']{
+            transform: scale(2);
+            margin: 20px;
+        }
+        .header{
+            background-color: #3b99a7;
+            grid-area: header
+        }
+        .main-container{
+            grid-area: main;
+            display: grid;
+            justify-content: center;
+            background-color: rgb(214, 230, 239);
+            grid-template-rows: auto 1fr 1fr;
+            grid-template-columns: 1fr;
+        }
+        .left-side{
+            background-color: rgb(255, 255, 255);
+            grid-area: left;
+        }
+        .right-side{
+            background-color: rgb(255, 255, 255);
+            grid-area: right;
+        }
+        .main{
+            display: grid;
+            grid-template-columns: 1fr 6fr 1fr;
+            grid-template-rows: 50px auto 50px;
+            grid-template-areas: "left header right"
+            "left main right" 
+            "left footer right";
+            height: 100vh;
+        }
+        .regexp-table{
+            padding: 10px 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .add-new{
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .check-regexp{
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .footer{
+            grid-area: footer;
+            background-color: #3b99a7;
+        }
+    </style>
+</head>
+<body class="main">
+    <div class="left-side"></div>
+    <div class="right-side"></div>
+    <header class="header">
+        
+    </header>
+    <div class="main-container">
+        <div class="regexp-table">
+            <table border="1">
+                <tbody data-bind="foreach: parameters">
+                        <tr>
+                            <td>
+                                <input type="radio" name="regExpForCheck" data-bind="checked: $parent.regExpForCheck, attr: {value: $index()}">
+                            </td>
+                            <td data-bind="text: name"></td>
+                            <td data-bind="text: regexp"></td>
+                            <td>
+                                <button data-bind="click: $parent.removeItem">REMOVE</button>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="add-new">
+            <label data-bind="text: 'Add new'"></label>
+            <input type="checkbox" name="addNewShow" data-bind="checked: addNewShow" />
+
+            <div data-bind="visible: addNewShow">
+                <table border="1">
+                    <tr>
+                        <td>Name</td>
+                        <td>Value</td>
+                        <td>RegExp</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" data-bind="textInput: newName">
+                        </td>
+                        <td>
+                            <input type="text" data-bind="textInput: newValue">
+                        </td>
+                        <td>
+                            <input type="text" data-bind="textInput: newRegExp">
+                        </td>
+                    </tr>
+                </table> 
+                <button data-bind="click: addNewHandler">ADD NEW</button>
+            </div>
+        </div>
+        <div class="check-regexp">
+            <label data-bind="text: 'Check regexp'"></label>
+            <input type="checkbox" name="checkRegShow" data-bind="checked: checkRegShow" />
+
+            <div data-bind="visible: checkRegShow">
+                <span data-bind="visible: !regExpForCheck()">Please choise one regExp from table upper</span>
+                <div data-bind="visible: checkRegShow && regExpForCheck">
+                    <textarea cols="50" rows="10" data-bind="textInput: newSMS"></textarea>
+                    <br>
+                    <button data-bind="click: checkRegExp">CHECK</button>
+                    <span data-bind="text: checkResult"></span>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer"></footer>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+
+    <script>
+        var AppViewModel = function(){
+            var self = this;
+            
+
+            self.addNewShow = ko.observable(false);
+            self.checkRegShow = ko.observable(false);
+            self.newSMS = ko.observable();
+            self.regExpForCheck = ko.observable();
+            self.checkResult = ko.observable();
+
+            self.newName = ko.observable();
+            self.newValue = ko.observable();
+            self.newRegExp = ko.observable();
+            self.curentREGEXP = ko.observable();
+            self.parameters = ko.observableArray([{name:' ', value:' ', regexp:' '}]);
+
+            self.onload = function(){
+                var config = {
+                    apiKey: "AIzaSyBDo3MR-e4F5vNRo3mnB1VkFfcWfzRA5rM",
+                    authDomain: "alfa-check-base.firebaseapp.com",
+                    databaseURL: "https://alfa-check-base.firebaseio.com",
+                    projectId: "alfa-check-base",
+                    storageBucket: "alfa-check-base.appspot.com",
+                    messagingSenderId: "637550342457"
+                };
+        
+                firebase.initializeApp(config);
+
+                self.getRegExpFromFirebase()
+            }
+
+            self.curentREGEXP.subscribe(function(newVal){
+                var newArr = newVal.map(function(val){
+                    return val;
+                })
+
+                self.parameters(newArr);
+            })
+
+            self.parameters.subscribe(function(){
+                if(self.curentREGEXP().length == self.parameters().length){
+                    console.log('same')
+                } else {
+                    console.log('not same')
+                    self.updateRegExpInFirebase(self.parameters());
+                }
+            })
+
+            self.addNewHandler = function(){
+                var obj = {
+                    name : self.newName(),
+                    value : self.newValue(),
+                    regexp : self.newRegExp(),
+                }
+
+                self.parameters.push(obj)
+
+                self.newName('')
+                self.newValue('')
+                self.newRegExp('')
+            }
+
+            self.removeItem = function(el){
+                console.log('REMOVE')
+                var arr = self.parameters().filter(function(val){
+                    return val.name != el.name && val.value != el.value && val.regexp != el.regexp
+                })
+                self.parameters(arr)
+            }
+
+            self.checkRegExp = function(){
+                console.log("IN CHECK")
+
+                var resObj = self.getCategory([self.parameters().find(val => val.id == self.regExpForCheck())], self.newSMS())
+
+                self.checkResult(resObj ? resObj.name : false)
+             
+            }
+
+            self.getCategory = function(arr, sms){
+                return arr.find(val => {
+                    var reg = new RegExp(val.regexp);
+                    return reg.test(sms);
+                })
+                
+            }
+
+            self.testFunction = function(){
+                console.log('IN TEST FUNCTION');
+
+                self.getRegExpFromFirebase()
+            }
+
+            self.getRegExpFromFirebase = function(){
+                
+                    var database = firebase.database().ref('regexp').once("value")
+                    .then(function(snapshot) {
+            
+                        
+                        self.curentREGEXP(snapshot.val());
+                        console.log(self.curentREGEXP());
+            
+                    })
+                    .catch(function(err){
+                        console.log(err)
+                    })
+            }
+
+            self.updateRegExpInFirebase = function(arr){
+                firebase.database().ref('regexp').set(arr)
+                self.curentREGEXP(arr)
+            }
+
+
+            self.onload()
+            return self;
+        }
+
+        ko.applyBindings(new AppViewModel());
+
+
+        
+        
+
+           
+        
+        
+        
+
+
+
+
+    </script>
+</body>
+</html>

@@ -71,6 +71,16 @@ BASE.stataUpdateClear = (count, newVal) => {
     console.log('State updated clear');
 }
 
+BASE.regexpGet = () => {
+    return new Promise(res => {
+        BASE.historyCurrent = BASE.db.ref(`regexp`);
+
+        BASE.historyCurrent.once("value", function(snapshot) {
+            res(snapshot.val());
+        });
+    });
+}
+
 BASE.stateSave = () => {
     BASE.stateCurrent.set(BASE.stateCurrentValue);
     console.log('State saved');

@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 function ROUTER(req, res){
     console.log('in router');
 
@@ -22,7 +24,21 @@ function ROUTER(req, res){
     }
     else if(req.url ==='/web'){
         res.statusCode = 200;
-        res.end('Welcom to home page');
+        var file = fs.readFileSync('./home.html').toString();
+        res.end(file);
+    }
+
+    else if(req.url ==='/web/category'){
+        res.statusCode = 200;
+        var file = fs.readFileSync('./category.html').toString();
+        res.end(file);
+    }
+
+    else if(req.url ==='/web/test'){
+        res.statusCode = 200;
+        var t = "Карта 5.5782\nСо счёта: BY41ALFA30146906250090270000\nОплата товаров/услуг\nУспешно\nСумма:6.20 BYN\nОстаток:25.79 BYN\nНа время:12:38:23\nBLR/MINSK/KAFE \"KHLEB SOL\"\n25.07.2018 12:38:23\r\n"
+        onMessage(t)
+        res.end('file');
     }
 
     else{
@@ -37,16 +53,33 @@ function onMessage(text){
     const Base = require('./firebase.js');
     const pup = require('./puppeteer.js')
 
-    let parsedMes = parseMes.parseMessage(text);
+    Base.regexpGet()
+        .then(
+            function(regExp){
+                console.log(regExp)
 
-    // Base.init();
-    Base.historyAdd(text);
+                let parsedMes = parseMes.parseMessage(text, regExp);
 
-    Base.stataUpdateClear(parsedMes.count, parsedMes);
+                Base.historyAdd(text);
 
-    pup.run(parsedMes, text)
+                Base.stataUpdateClear(parsedMes.count, parsedMes);
 
-    app.sendLastOperation(parsedMes.count, text);
+                pup.run(parsedMes, text)
+
+                app.sendLastOperation(parsedMes.count, text);
+            }
+        )
+
+    // let parsedMes = parseMes.parseMessage(text);
+
+    // // Base.init();
+    // Base.historyAdd(text);
+
+    // Base.stataUpdateClear(parsedMes.count, parsedMes);
+
+    // pup.run(parsedMes, text)
+
+    // app.sendLastOperation(parsedMes.count, text);
 }
 
 module.exports = {

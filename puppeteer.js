@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-async function run({sum, count, type}, text) {
+async function run({sum, count, type, categortObj}, text) {
     const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
     
@@ -25,7 +25,8 @@ async function run({sum, count, type}, text) {
 
     if(type == 'Negative'){
         await page.select(addToCalendar.TYPE_SELECT_SELECTOR, addToCalendar.Negative)
-        await page.select(addToCalendar.CATEGORY_SELECT_SELECTOR, addToCalendar.CATEGORY_NEUCHTENO_NEG_VALUE)
+        var categoryValue = categortObj.value ||addToCalendar.CATEGORY_NEUCHTENO_NEG_VALUE;
+        await page.select(addToCalendar.CATEGORY_SELECT_SELECTOR, categoryValue)
     } else if(type == 'Positive'){
         await page.select(addToCalendar.TYPE_SELECT_SELECTOR, addToCalendar.Positive)
         await page.select(addToCalendar.CATEGORY_SELECT_SELECTOR, addToCalendar.CATEGORY_NEUCHTENO_POS_VALUE)
